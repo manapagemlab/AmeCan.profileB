@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AmeCan. 才能プロファイル（β）</title>
+  <style>
+    :root{--bg:#fbfdfc;--card:#ffffff;--ink:#0f172a;--muted:#475569;--brand:#0ea5a3;--accent:#fb7185;--warn:#f59e0b;--danger:#8b5cf6;--line:#e5e7eb}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);}
+    header{position:sticky;top:0;background:rgba(251,253,252,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:10}
+    .wrap{max-width:980px;margin:0 auto;padding:16px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:48px;height:48px;border-radius:10px;object-fit:contain;box-shadow:0 6px 18px rgba(14,165,163,.25)}
+    .brand h1{font-size:clamp(20px,2.6vw,28px);margin:0}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,.06);}
+    .grid{display:grid;gap:16px}
+    @media(min-width:840px){.grid-2{grid-template-columns:1fr 1fr}}
+    .pill{display:inline-block;padding:.25rem .6rem;border-radius:999px;font-size:.85rem;border:1px solid #e2e8f0;color:#334155;background:#fff}
+    .btn{appearance:none;border:0;border-radius:999px;padding:.8rem 1.1rem;font-weight:700;cursor:pointer}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-ghost{background:#fff;border:1px solid var(--line)}
+    .muted{color:var(--muted)}
+    details summary{cursor:pointer;font-weight:700;margin-bottom:8px}
+    fieldset{border:0;margin:0;padding:0}
+    legend{font-weight:700;margin-bottom:8px}
+    .q{padding:12px;border-radius:12px;border:1px solid var(--line);margin-bottom:10px;background:#fff}
+    .q h4{margin:.1rem 0 .4rem 0;font-size:1rem}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .meter{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .bar{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));width:0%}
+    .badge{display:inline-block;padding:.25rem .5rem;border-radius:6px;font-weight:700;color:#fff}
+    .b-brand{background:var(--brand)} .b-accent{background:var(--accent)} .b-warn{background:var(--warn)} .b-danger{background:var(--danger)}
+    .result-card h3{margin:.3rem 0}
+    .hint{font-size:.9rem}
+    .footer{font-size:.85rem;color:#64748b}
+    .sticky-actions{position:sticky;bottom:0;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);padding:12px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+    .chartWrap{padding:8px;border:1px dashed var(--line);border-radius:12px;background:#fff}
+    .lead{line-height:1.7}
+    @media print{header{position:static;background:#fff;border:0} .card{box-shadow:none} .sticky-actions,.footer,.btn{display:none !important} body{background:#fff;color:#000} .chartWrap{border:0}}
+  </style>
+  <!-- Chart.js（Radar用。オンライン必須） -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <!-- ロゴ：データURI（外部ファイル要らず） -->
+        <img class="logo" alt="AmeCan. ロゴ"
+             src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230ea5a3'/><stop offset='1' stop-color='%23fb7185'/></linearGradient></defs><rect rx='16' ry='16' width='96' height='96' fill='url(%23g)'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='30'>A</text></svg>"/>
+        <div>
+          <h1>AmeCan. 才能プロファイル（β）</h1>
+          <p class="muted">〜違いをカラフルに才能に変える〜 ／ 「診断」ではなく<mark>傾向を知る</mark>ためのツール</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <section class="card">
+      <h2>使い方</h2>
+      <ol class="muted">
+        <li>各項目を <strong>いつもそう＝2点／ときどきそう＝1点／あまりない＝0点</strong> で選びます。</li>
+        <li>タイプごとに自動で合計し、傾向の強いタイプを表示します（複数強め＝ハイブリッド）。</li>
+        <li>結果の下に <em>強み／工夫が必要な場面／AI活用プロンプト</em> が出ます。</li>
+      </ol>
+    </section>
+
+    <section id="form" class="card">
+      <h2>質問（タイプ別）</h2>
+      <form id="quiz" class="grid"></form>
+      <div class="sticky-actions">
+        <button type="button" class="btn btn-ghost" id="resetBtn">リセット</button>
+        <button type="button" class="btn btn-primary" id="calcBtn">結果を見る</button>
+      </div>
+    </section>
+
+    <section id="result" class="card result-card" hidden>
+      <h2>結果</h2>
+      <div id="scoreBadges" class="row" aria-live="polite"></div>
+      <div class="meter" aria-hidden="true" style="margin:12px 0 18px">
+        <div id="totalBar" class="bar"></div>
+      </div>
+      <div class="chartWrap">
+        <canvas id="radarChart" height="260" aria-label="タイプ別スコアレーダーチャート" role="img"></canvas>
+      </div>
+      <div id="resultDetail" class="grid grid-2" style="margin-top:12px"></div>
+      <details style="margin-top:12px">
+        <summary>注意事項</summary>
+        <p class="hint">この結果は医療的な診断を示すものではありません。状況や環境で変わることがあります。お子さんの強みを見つけ、安心して伸ばすためのヒントとしてご活用ください。</p>
+      </details>
+      <div class="row" style="margin-top:12px">
+        <button class="btn btn-ghost" id="printBtn">印刷/保存</button>
+        <button class="btn btn-ghost" id="copyBtn">結果をコピー</button>
+        <button class="btn btn-primary" id="shareBtn">共有テキストを作る</button>
+      </div>
+    </section>
+
+    <section class="card footer">
+      <p>© AmeCan. / これは〈傾向を可視化する参考ツール〉です。個人情報は収集しません。ブラウザ内で完結します。</p>
+    </section>
+  </main>
+
+  <script>
+    // ====== データ定義 ======
+    const TYPES = [
+      {
+        key: 'action',
+        name: 'ひらめきアクションタイプ',
+        items: [
+          '興味が移るのが早く、新しいことをどんどん試したがる',
+          'じっと座っているより、体を動かす方が好き',
+          '思いついたことをすぐに口にしたり行動に移したりする',
+          '忘れ物や物をなくすことが多い',
+          'いろいろなことを試すのが好き（広く浅く）',
+          '好きなテーマは誰かに話したくて仕方ない',
+          '興味があることとないことの差が極端に出やすい',
+          '「これやりたい！」と自分から提案する',
+        ],
+        tips: {
+          strong: ['発想力','瞬発力','チャレンジ精神','人を巻き込む力'],
+          care: ['忘れ物','集中の持続','衝動的な行動'],
+          prompts: [
+            '今日のひらめきを3分でまとめる方法を考えて',
+            '思いついた遊びを実験レポート風にして',
+            'アイデアを行動計画に変えるチェックリストを作って'
+          ],
+          days: [1,2,5]
+        }
+      },
+      {
+        key: 'deep',
+        name: 'じっくり探究タイプ',
+        items: [
+          '興味のあることに夢中になると時間を忘れる',
+          '予定や順序が変わると不安になる',
+          '細かい部分やパターンにすぐ気づく',
+          '興味を持ったテーマは徹底的に掘り下げる',
+          '同じ遊びや作業を繰り返すのが心地よい',
+          '集団より一人でじっくりやるのが好き',
+          '一つのテーマに長く集中することが多い',
+        ],
+        tips: {
+          strong: ['探究心','分析力','集中力','規則性の発見'],
+          care: ['予定変更のストレス','視野が狭くなる'],
+          prompts: [
+            '好きな分野をさらに深める探究課題を3つ考えて',
+            '恐竜（例）をテーマに調べ学習の流れを作って',
+            '集中した時間を活かして成果をまとめる工夫を提案して'
+          ],
+          days: [3,4]
+        }
+      },
+      {
+        key: 'experiential',
+        name: '体験実感タイプ',
+        items: [
+          '読み書きより「耳で聞く・話す」方が理解しやすい',
+          '絵や図で説明されるとわかりやすい',
+          '手を動かすと理解が深まる',
+          '言葉より絵や作品で表現するのが得意',
+          '音読が苦手でも内容は理解できている',
+          '映像や写真から学ぶ方が理解が速い',
+          '五感を通した遊び（音・色・感触）に強い関心を示す',
+        ],
+        tips: {
+          strong: ['実感力','表現力','体験型学習の吸収力'],
+          care: ['抽象説明では理解しづらい','読み書きに時間がかかる'],
+          prompts: [
+            '今日のお手伝いを実験レポート風にまとめて',
+            '体験したことを絵日記風に表現するアイデアを出して',
+            '体験を友達や家族に説明するプレゼンを考えて'
+          ],
+          days: [4,6]
+        }
+      },
+      {
+        key: 'creative',
+        name: '感性クリエイティブタイプ',
+        items: [
+          '大きな音やざわざわした場所が苦手',
+          '光や色に敏感に反応する',
+          '食感や素材に強いこだわりがある',
+          '匂いに敏感で、好き嫌いがはっきりしている',
+          '服のタグや素材を不快に感じることがある',
+          '五感を使った芸術的な表現に強い興味を持つ',
+          '絵や音を使った自己表現が得意',
+        ],
+        tips: {
+          strong: ['芸術的感性','独自の発想','表現力'],
+          care: ['刺激過多の環境で疲れやすい','こだわりがストレスになる'],
+          prompts: [
+            '色と音をテーマに詩を作って',
+            '好きな色を使ったデザイン案を考えて',
+            '自分の感覚をテーマに日記や絵を残す方法を提案して'
+          ],
+          days: [6,7]
+        }
+      },
+      {
+        key: 'balance',
+        name: 'バランスチェンジタイプ',
+        items: [
+          '自分なりのマイルールを作って動くことがある',
+          '自分のこだわりを大事にしている',
+          '気分や環境で興味が変わることが多い',
+          '好きなテーマは誰かに話したくて仕方ない（重複OK）',
+          '興味があることとないことの差が大きい',
+        ],
+        tips: {
+          strong: ['柔軟性','適応力','広い好奇心'],
+          care: ['やりかけが増えやすい','ルールのすり合わせが必要'],
+          prompts: [
+            '今日の気分に合うテーマを3つ提案して',
+            'いろんな分野を比べる表を作って',
+            '環境や気分に合わせた切り替え方法を考えて'
+          ],
+          days: [2,5,7]
+        }
+      },
+    ];
+
+    const CHOICES = [
+      { label: 'いつもそう', value: 2 },
+      { label: 'ときどきそう', value: 1 },
+      { label: 'あまりない', value: 0 },
+    ];
+
+    // ====== UI生成 ======
+    const formEl = document.getElementById('quiz');
+    TYPES.forEach((t, ti) => {
+      const fs = document.createElement('fieldset');
+      fs.className = 'qset';
+      const legend = document.createElement('legend');
+      legend.textContent = `${ti+1}. ${t.name}`;
+      fs.appendChild(legend);
+
+      t.items.forEach((qText, qi) => {
+        const q = document.createElement('div');
+        q.className = 'q';
+        const h = document.createElement('h4');
+        h.textContent = qText;
+        q.appendChild(h);
+
+        const row = document.createElement('div');
+        row.className = 'row';
+        CHOICES.forEach((c, ci) => {
+          const id = `${t.key}_${qi}_${ci}`;
+          const label = document.createElement('label');
+          label.className = 'pill';
+          label.setAttribute('for', id);
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = `${t.key}_${qi}`;
+          input.id = id;
+          input.value = c.value;
+          input.style.marginRight = '6px';
+          label.appendChild(input);
+          label.append(` ${c.label}`);
+          row.appendChild(label);
+        });
+        q.appendChild(row);
+        fs.appendChild(q);
+      });
+
+      formEl.appendChild(fs);
+    });
+
+    // ====== 計算 & 出力 ======
+    let radarInstance = null;
+    function calcScores(){
+      const scores = {};
+      let totalPossible = 0, totalScored = 0;
+      TYPES.forEach(t => {
+        let s = 0; const max = t.items.length * 2; totalPossible += max;
+        t.items.forEach((_, qi) => {
+          const name = `${t.key}_${qi}`;
+          const checked = document.querySelector(`input[name="${name}"]:checked`);
+          if(checked){ s += Number(checked.value); totalScored += Number(checked.value); }
+        });
+        scores[t.key] = {name: t.name, score: s, max};
+      });
+      return {scores, totalScored, totalPossible};
+    }
+
+    function renderRadar(scores){
+      const ctx = document.getElementById('radarChart');
+      const labels = TYPES.map(t=>t.name.replace('タイプ',''));
+      const dataPercents = TYPES.map(t=>{
+        const s = scores[t.key].score; const max = t.items.length*2; return Math.round((s/max)*100);
+      });
+      if(radarInstance){ radarInstance.destroy(); }
+      radarInstance = new Chart(ctx, {
+        type: 'radar',
+        data: { labels, datasets: [{ label: '傾向（%）', data: dataPercents, fill: true,
+          backgroundColor: 'rgba(14,165,163,0.20)', borderColor: 'rgba(14,165,163,1)',
+          pointBackgroundColor: 'rgba(251,113,133,1)', pointBorderColor: '#fff' }] },
+        options: { responsive: true, maintainAspectRatio: false,
+          scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { stepSize: 20 } } },
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx)=> `${ctx.raw}%` } } } }
+      });
+    }
+
+    function renderResult(){
+      const {scores, totalScored, totalPossible} = calcScores();
+      const result = document.getElementById('result');
+      const badges = document.getElementById('scoreBadges');
+      const detail = document.getElementById('resultDetail');
+      const bar = document.getElementById('totalBar');
+
+      result.hidden = false;
+
+      // badges
+      badges.innerHTML = '';
+      const arr = Object.entries(scores).map(([k,v]) => ({key:k, ...v})).sort((a,b)=>b.score-a.score);
+      const top = arr[0];
+      const top2 = arr[1];
+      arr.forEach((s, i) => {
+        const b = document.createElement('span');
+        const color = i===0 ? 'b-accent' : (i===1 ? 'b-brand' : '');
+        b.className = `badge ${color}`;
+        b.style.marginRight = '8px';
+        b.textContent = `${s.name}: ${s.score} / ${s.max}`;
+        badges.appendChild(b);
+      });
+
+      // total meter
+      const pct = totalPossible ? Math.round((totalScored/totalPossible)*100) : 0;
+      bar.style.width = pct + '%';
+      bar.title = `回答の進捗: ${pct}%`;
+
+      // radar
+      renderRadar(scores);
+
+      // detail cards（上位2タイプ）
+      detail.innerHTML = '';
+      [top, top2].filter(Boolean).forEach(s => {
+        const t = TYPES.find(tt => tt.key === s.key);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${t.name}（${s.score}/${s.max}）</h3>
+          <p class="muted">※「傾向が強めに出やすいタイプ」を表示しています。診断ではありません。</p>
+          <p><span class="pill">おすすめDay：${(t.tips.days||[]).join('・')}</span></p>
+          <h4>強み</h4>
+          <ul>${t.tips.strong.map(x=>`<li>${x}</li>`).join('')}</ul>
+          <h4>工夫が必要な場面</h4>
+          <ul>${t.tips.care.map(x=>`<li>${x}</li>`).join('')}</ul>
+          <h4>AI活用プロンプト例</h4>
+          <ul>${t.tips.prompts.map(x=>`<li>「${x}」</li>`).join('')}</ul>
+        `;
+        detail.appendChild(card);
+      });
+      window.scrollTo({top: result.offsetTop - 64, behavior: 'smooth'});
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', renderResult);
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      document.getElementById('quiz').reset();
+      document.getElementById('result').hidden = true;
+      if(radarInstance){radarInstance.destroy();}
+    });
+    document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+    document.getElementById('copyBtn').addEventListener('click', ()=>{
+      const txt = document.getElementById('result').innerText.trim();
+      navigator.clipboard.writeText(txt).then(()=>alert('結果をコピーしました'));
+    });
+    document.getElementById('shareBtn').addEventListener('click', ()=>{
+      const {scores} = calcScores();
+      const arr = Object.entries(scores).map(([k,v]) => ({key:k, ...v})).sort((a,b)=>b.score-a.score);
+      const top = arr[0];
+      const t = TYPES.find(tt => tt.key === top.key);
+      const percent = Math.round((top.score/top.max)*100);
+      const days = (t.tips.days||[]).join('・');
+      const share = `AmeCan. 才能プロファイル（β）
+上位タイプ：${t.name}（${percent}%）
+強み：${t.tips.strong.join('、')}
+おすすめDay：${days}
+AIプロンプト例：「${t.tips.prompts[0]}」
+#AmeCan #才能プロファイル`;
+      navigator.clipboard.writeText(share).then(()=>alert('共有テキストをコピーしました'));
+    });
+  </script>
+</body>
+</html>
