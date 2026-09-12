@@ -3,384 +3,548 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AmeCan. 才能プロファイル（β）</title>
+  <title>AmeCan. こどもの特性プロファイル</title>
   <style>
-    :root{--bg:#fbfdfc;--card:#ffffff;--ink:#0f172a;--muted:#475569;--brand:#0ea5a3;--accent:#fb7185;--warn:#f59e0b;--danger:#8b5cf6;--line:#e5e7eb}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);}
-    header{position:sticky;top:0;background:rgba(251,253,252,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:10}
-    .wrap{max-width:980px;margin:0 auto;padding:16px}
-    .brand{display:flex;align-items:center;gap:10px}
-    .logo{width:48px;height:48px;border-radius:10px;object-fit:contain;box-shadow:0 6px 18px rgba(14,165,163,.25)}
-    .brand h1{font-size:clamp(20px,2.6vw,28px);margin:0}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,.06);}
-    .grid{display:grid;gap:16px}
-    @media(min-width:840px){.grid-2{grid-template-columns:1fr 1fr}}
-    .pill{display:inline-block;padding:.25rem .6rem;border-radius:999px;font-size:.85rem;border:1px solid #e2e8f0;color:#334155;background:#fff}
-    .btn{appearance:none;border:0;border-radius:999px;padding:.8rem 1.1rem;font-weight:700;cursor:pointer}
-    .btn-primary{background:var(--brand);color:#fff}
-    .btn-ghost{background:#fff;border:1px solid var(--line)}
-    .muted{color:var(--muted)}
-    details summary{cursor:pointer;font-weight:700;margin-bottom:8px}
-    fieldset{border:0;margin:0;padding:0}
-    legend{font-weight:700;margin-bottom:8px}
-    .q{padding:12px;border-radius:12px;border:1px solid var(--line);margin-bottom:10px;background:#fff}
-    .q h4{margin:.1rem 0 .4rem 0;font-size:1rem}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .meter{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
-    .bar{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));width:0%}
-    .badge{display:inline-block;padding:.25rem .5rem;border-radius:6px;font-weight:700;color:#fff}
-    .b-brand{background:var(--brand)} .b-accent{background:var(--accent)} .b-warn{background:var(--warn)} .b-danger{background:var(--danger)}
-    .result-card h3{margin:.3rem 0}
-    .hint{font-size:.9rem}
-    .footer{font-size:.85rem;color:#64748b}
-    .sticky-actions{position:sticky;bottom:0;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);padding:12px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
-    .chartWrap{padding:8px;border:1px dashed var(--line);border-radius:12px;background:#fff}
-    .lead{line-height:1.7}
-    @media print{header{position:static;background:#fff;border:0} .card{box-shadow:none} .sticky-actions,.footer,.btn{display:none !important} body{background:#fff;color:#000} .chartWrap{border:0}}
+    :root{--bg:#f8faf9;--card:#fff;--ink:#0f172a;--muted:#475569;--brand:#0ea5a3;--accent:#fb7185;--warm:#f59e0b;--purple:#8b5cf6;--green:#22c55e;--blue:#3b82f6;--line:#e5e7eb;--brand-l:#e0f7f7;--accent-l:#fff0f2;--warm-l:#fef3c7;--purple-l:#f3f0ff;--green-l:#f0fdf4;--blue-l:#eff6ff}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+    header{position:sticky;top:0;background:rgba(248,250,249,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:100;padding:10px 16px}
+    .header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px}
+    .logo{width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 4px 12px rgba(14,165,163,.3)}
+    .header-text h1{font-size:clamp(14px,2.2vw,20px);font-weight:800}
+    .header-text p{font-size:.75rem;color:var(--muted)}
+    .prog-wrap{max-width:900px;margin:4px auto 0;padding:0 16px}
+    .prog-bar{height:4px;background:var(--line);border-radius:999px}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:999px;transition:width .4s;width:0%}
+    .wrap{max-width:900px;margin:0 auto;padding:20px 16px 80px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 4px 20px rgba(2,6,23,.06);margin-bottom:14px}
+    h2{font-size:1.35rem;font-weight:800;margin-bottom:10px}
+    h3{font-size:1.05rem;font-weight:700;margin-bottom:8px}
+    h4{font-size:.97rem;font-weight:700;margin-bottom:6px}
+    p{margin-bottom:6px}
+    ul,ol{padding-left:1.3em;margin-bottom:6px}
+    li{margin-bottom:3px}
+    .step{display:none}.step.active{display:block}
+    .btn{appearance:none;border:0;border-radius:999px;padding:.7rem 1.4rem;font-weight:700;font-size:.93rem;cursor:pointer;transition:all .2s;font-family:inherit}
+    .btn-primary{background:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(14,165,163,.3)}
+    .btn-primary:hover{background:#0d9190;transform:translateY(-1px)}
+    .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+    .btn-ghost:hover{background:#f8fafc}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .row-end{justify-content:flex-end}.row-between{justify-content:space-between}
+    .hero{text-align:center;padding:28px 0 14px}
+    .hero-em{font-size:3rem;display:block;margin-bottom:10px}
+    .hero h2{font-size:1.7rem;line-height:1.3}
+    .hero p{color:var(--muted);font-size:.95rem;max-width:540px;margin:8px auto 0}
+    .tag-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+    .tag{display:inline-block;padding:.28rem .75rem;border-radius:999px;font-size:.82rem;font-weight:600}
+    .tag-b{background:var(--brand-l);color:#0a7b79}.tag-a{background:var(--accent-l);color:#c0304a}
+    .tag-w{background:var(--warm-l);color:#b45309}.tag-p{background:var(--purple-l);color:#6d28d9}
+    .tag-g{background:var(--green-l);color:#15803d}
+    .notice{background:var(--warm-l);border:1.5px solid var(--warm);border-radius:12px;padding:12px 14px;font-size:.88rem;margin-bottom:12px}
+    .notice-b{background:var(--brand-l);border-color:var(--brand);color:#0a5c5a}
+    .info-grid{display:grid;gap:12px}
+    @media(min-width:600px){.info-grid{grid-template-columns:1fr 1fr}}
+    .form-group label{display:block;font-weight:700;margin-bottom:5px;font-size:.9rem}
+    select{width:100%;padding:.55rem .8rem;border:1.5px solid var(--line);border-radius:10px;font-size:.93rem;font-family:inherit;background:#fff;color:var(--ink)}
+    select:focus{outline:none;border-color:var(--brand)}
+    .concern-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:5px}
+    @media(max-width:480px){.concern-grid{grid-template-columns:1fr}}
+    .chk-lbl{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;font-size:.86rem;transition:all .15s;background:#fff}
+    .chk-lbl:hover{border-color:var(--brand);background:var(--brand-l)}
+    .chk-lbl input{width:15px;height:15px;accent-color:var(--brand);flex-shrink:0}
+    .axis-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--line)}
+    .axis-icon{font-size:1.7rem}
+    .axis-ttl h2{font-size:1.1rem;margin:0}
+    .axis-ttl p{font-size:.8rem;color:var(--muted);margin:0}
+    .qitem{border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;background:#fff}
+    .qitem:last-child{margin-bottom:0}
+    .qitem p{font-size:.93rem;margin-bottom:8px;font-weight:500}
+    .rg{display:flex;gap:6px;flex-wrap:wrap}
+    .rl{padding:.38rem .85rem;border-radius:999px;border:1.5px solid var(--line);cursor:pointer;font-size:.83rem;transition:all .15s;white-space:nowrap;user-select:none}
+    .rl:hover{border-color:var(--brand)}
+    .rl.s2{background:var(--accent);border-color:var(--accent);color:#fff}
+    .rl.s1{background:var(--warm);border-color:var(--warm);color:#fff}
+    .rl.s0{background:#94a3b8;border-color:#94a3b8;color:#fff}
+    .axis-nav{display:flex;align-items:center;gap:10px;margin-top:18px;justify-content:space-between}
+    .dots{display:flex;gap:5px;align-items:center}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:all .2s}
+    .dot.active{background:var(--brand);width:20px;border-radius:999px}
+    .dot.done{background:var(--brand);opacity:.5}
+    .axis-cnt{font-size:.83rem;color:var(--muted);font-weight:600}
+    .chart-wrap{max-width:380px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:16px;background:#fff}
+    .prof-badges{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+    .pbadge{display:flex;align-items:center;gap:5px;padding:.35rem .85rem;border-radius:999px;font-size:.82rem;font-weight:700;border:2px solid}
+    .sbar-wrap{margin:5px 0 12px}
+    .sbar-lbl{display:flex;justify-content:space-between;font-size:.83rem;margin-bottom:3px}
+    .sbar-track{height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+    .sbar-fill{height:100%;border-radius:999px;transition:width .8s ease}
+    .tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+    .tab-btn{padding:.38rem .8rem;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+    .tab-btn.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .tab-pane{display:none}.tab-pane.active{display:block}
+    .adv-block{background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:9px}
+    .str-card{background:linear-gradient(135deg,var(--brand-l),var(--accent-l));border:2px solid var(--brand);border-radius:16px;padding:16px;margin-bottom:12px}
+    .str-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .str-tag{background:#fff;border:1.5px solid var(--brand);color:var(--brand);padding:.28rem .75rem;border-radius:999px;font-size:.83rem;font-weight:700}
+    .res-item{display:flex;gap:12px;padding:13px;border:1px solid var(--line);border-radius:12px;margin-bottom:7px;background:#fff}
+    .res-icon{font-size:1.5rem;flex-shrink:0;padding-top:2px}
+    .res-body h4{margin-bottom:3px}
+    .res-body p{font-size:.84rem;color:var(--muted);margin:0}
+    .selfcare-card{background:linear-gradient(135deg,var(--purple-l),var(--accent-l));border:2px solid var(--purple);border-radius:16px;padding:18px}
+    @media print{header{position:static;background:#fff;border:0}.card{box-shadow:none}.step{display:block!important}.tab-pane{display:block!important}.btn,.axis-nav,.tab-bar,.prog-wrap{display:none!important}body{background:#fff}}
   </style>
-  <!-- Chart.js（Radar用。オンライン必須） -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <div class="brand">
-        <!-- ロゴ：データURI（外部ファイル要らず） -->
-        <img class="logo" alt="AmeCan. ロゴ"
-             src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230ea5a3'/><stop offset='1' stop-color='%23fb7185'/></linearGradient></defs><rect rx='16' ry='16' width='96' height='96' fill='url(%23g)'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='30'>A</text></svg>"/>
-        <div>
-          <h1>AmeCan. 才能プロファイル（β）</h1>
-          <p class="muted">〜違いをカラフルに才能に変える〜 ／ 「診断」ではなく<mark>傾向を知る</mark>ためのツール</p>
-        </div>
-      </div>
+<header>
+  <div class="header-inner">
+    <img class="logo" alt="AmeCan." src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230ea5a3'/><stop offset='1' stop-color='%23fb7185'/></linearGradient></defs><rect rx='18' width='96' height='96' fill='url(%23g)'/><text x='50%' y='56%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-size='40' font-weight='bold'>A</text></svg>"/>
+    <div class="header-text">
+      <h1>AmeCan. こどもの特性プロファイル</h1>
+      <p>〜違いをカラフルに才能に変える〜</p>
     </div>
-  </header>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" id="pf"></div></div></div>
+</header>
 
-  <main class="wrap grid">
-    <section class="card">
-      <h2>使い方</h2>
-      <ol class="muted">
-        <li>各項目を <strong>いつもそう＝2点／ときどきそう＝1点／あまりない＝0点</strong> で選びます。</li>
-        <li>タイプごとに自動で合計し、傾向の強いタイプを表示します（複数強め＝ハイブリッド）。</li>
-        <li>結果の下に <em>強み／工夫が必要な場面／AI活用プロンプト</em> が出ます。</li>
-      </ol>
-    </section>
+<main class="wrap">
+<!-- STEP 0 -->
+<div class="step active" id="step0">
+<div class="card">
+  <div class="hero">
+    <span class="hero-em">🌈</span>
+    <h2>お子さんの「特性」を、<br>みんなで一緒に理解しよう</h2>
+    <p>発達障害・グレーゾーンのお子さんを育てる保護者の方が、特性を深く理解し、前向きに関われるためのプロファイリングツールです。</p>
+  </div>
+  <div class="tag-row">
+    <span class="tag tag-b">👩‍⚕️ 保健師の視点</span>
+    <span class="tag tag-a">🏫 児童発達支援</span>
+    <span class="tag tag-w">💬 カウンセラー</span>
+    <span class="tag tag-p">📚 教育支援</span>
+    <span class="tag tag-g">🏠 家庭での工夫</span>
+  </div>
+  <div class="notice notice-b">
+    <strong>📌 このツールについて</strong><br>
+    医療的診断を示すものではありません。お子さんの特性・強みを可視化し、日常の関わりや支援を考えるためのヒントを提供します。個人情報は収集せず、ブラウザ内のみで完結します。
+  </div>
+  <h3 style="margin-bottom:8px">このツールでわかること</h3>
+  <ul style="margin-bottom:16px">
+    <li>7つの発達軸（注意・社会性・感覚・感情・学習・運動・強み）のプロファイル</li>
+    <li>お子さんの強みを前面に出したポジティブな特性理解</li>
+    <li>5つの専門的視点からの具体的で実践的なアドバイス</li>
+    <li>日本国内の支援リソース・相談機関ガイド</li>
+    <li>保護者自身のセルフケアヒント</li>
+  </ul>
+  <div class="row row-end"><button class="btn btn-primary" onclick="goStep(1)">はじめる →</button></div>
+</div>
+</div>
 
-    <section id="form" class="card">
-      <h2>質問（タイプ別）</h2>
-      <form id="quiz" class="grid"></form>
-      <div class="sticky-actions">
-        <button type="button" class="btn btn-ghost" id="resetBtn">リセット</button>
-        <button type="button" class="btn btn-primary" id="calcBtn">結果を見る</button>
-      </div>
-    </section>
+<!-- STEP 1 -->
+<div class="step" id="step1">
+<div class="card">
+  <h2>基本情報（任意）</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:14px">アドバイスをより適切にするために使います。入力しなくても結果は出ます。</p>
+  <div class="info-grid">
+    <div class="form-group">
+      <label for="childAge">お子さんの年齢</label>
+      <select id="childAge">
+        <option value="">選択しない</option>
+        <option value="0">0〜2歳（乳幼児）</option>
+        <option value="1">3〜5歳（幼児）</option>
+        <option value="2">6〜7歳（小1・2年）</option>
+        <option value="3">8〜10歳（小3〜5年）</option>
+        <option value="4">11〜12歳（小6・中1）</option>
+        <option value="5">中学生以上</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="responder">回答者</label>
+      <select id="responder">
+        <option value="parent">保護者（ご自身）</option>
+        <option value="teacher">先生・支援者</option>
+        <option value="other">その他</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group" style="margin-top:12px">
+    <label>現在気になっていること（複数選択可）</label>
+    <div class="concern-grid" id="cg">
+      <label class="chk-lbl"><input type="checkbox" value="attention"> 注意・集中・落ち着きのなさ</label>
+      <label class="chk-lbl"><input type="checkbox" value="social"> コミュニケーション・友人関係</label>
+      <label class="chk-lbl"><input type="checkbox" value="sensory"> 感覚の過敏・鈍感</label>
+      <label class="chk-lbl"><input type="checkbox" value="emotion"> 感情コントロール・癇癪</label>
+      <label class="chk-lbl"><input type="checkbox" value="learning"> 学習・読み書き・計算</label>
+      <label class="chk-lbl"><input type="checkbox" value="motor"> 運動・手先の不器用さ</label>
+      <label class="chk-lbl"><input type="checkbox" value="routine"> こだわり・ルーティン</label>
+      <label class="chk-lbl"><input type="checkbox" value="sleep"> 睡眠・食事</label>
+    </div>
+  </div>
+  <div class="row row-between" style="margin-top:18px">
+    <button class="btn btn-ghost" onclick="goStep(0)">← 戻る</button>
+    <button class="btn btn-primary" onclick="goStep(2)">質問に進む →</button>
+  </div>
+</div>
+</div>
 
-    <section id="result" class="card result-card" hidden>
-      <h2>結果</h2>
-      <div id="scoreBadges" class="row" aria-live="polite"></div>
-      <div class="meter" aria-hidden="true" style="margin:12px 0 18px">
-        <div id="totalBar" class="bar"></div>
-      </div>
-      <div class="chartWrap">
-        <canvas id="radarChart" height="260" aria-label="タイプ別スコアレーダーチャート" role="img"></canvas>
-      </div>
-      <div id="resultDetail" class="grid grid-2" style="margin-top:12px"></div>
-      <details style="margin-top:12px">
-        <summary>注意事項</summary>
-        <p class="hint">この結果は医療的な診断を示すものではありません。状況や環境で変わることがあります。お子さんの強みを見つけ、安心して伸ばすためのヒントとしてご活用ください。</p>
-      </details>
-      <div class="row" style="margin-top:12px">
-        <button class="btn btn-ghost" id="printBtn">印刷/保存</button>
-        <button class="btn btn-ghost" id="copyBtn">結果をコピー</button>
-        <button class="btn btn-primary" id="shareBtn">共有テキストを作る</button>
-      </div>
-    </section>
+<!-- STEP 2 -->
+<div class="step" id="step2">
+<div class="card" id="qcard">
+  <div class="axis-hdr" id="ahdr"></div>
+  <div id="qitems"></div>
+  <div class="axis-nav">
+    <button class="btn btn-ghost" id="abk" onclick="prevAxis()">← 前へ</button>
+    <div style="text-align:center">
+      <div class="dots" id="adots"></div>
+      <div class="axis-cnt" id="acnt"></div>
+    </div>
+    <button class="btn btn-primary" id="anxt" onclick="nextAxis()">次へ →</button>
+  </div>
+</div>
+</div>
 
-    <section class="card footer">
-      <p>© AmeCan. / これは〈傾向を可視化する参考ツール〉です。個人情報は収集しません。ブラウザ内で完結します。</p>
-    </section>
-  </main>
+<!-- STEP 3 -->
+<div class="step" id="step3">
+  <div class="card" id="rOverview"></div>
+  <div class="card" id="rStrengths"></div>
+  <div class="card" id="rAdvice"></div>
+  <div class="card" id="rResources"></div>
+  <div class="card" id="rSelfcare"></div>
+  <div class="card">
+    <p class="notice">📌 この結果は医療的診断ではありません。専門家への相談のきっかけや、日常の関わりを見直すためのヒントとしてご活用ください。</p>
+    <div class="row" style="gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="window.print()">🖨 印刷・保存</button>
+      <button class="btn btn-ghost" id="cpyBtn">📋 結果をコピー</button>
+      <button class="btn btn-ghost" onclick="location.reload()">🔄 最初からやり直す</button>
+    </div>
+  </div>
+</div>
+</main>
 
-  <script>
-    // ====== データ定義 ======
-    const TYPES = [
-      {
-        key: 'action',
-        name: 'ひらめきアクションタイプ',
-        items: [
-          '興味が移るのが早く、新しいことをどんどん試したがる',
-          'じっと座っているより、体を動かす方が好き',
-          '思いついたことをすぐに口にしたり行動に移したりする',
-          '忘れ物や物をなくすことが多い',
-          'いろいろなことを試すのが好き（広く浅く）',
-          '好きなテーマは誰かに話したくて仕方ない',
-          '興味があることとないことの差が極端に出やすい',
-          '「これやりたい！」と自分から提案する',
-        ],
-        tips: {
-          strong: ['発想力','瞬発力','チャレンジ精神','人を巻き込む力'],
-          care: ['忘れ物','集中の持続','衝動的な行動'],
-          prompts: [
-            '今日のひらめきを3分でまとめる方法を考えて',
-            '思いついた遊びを実験レポート風にして',
-            'アイデアを行動計画に変えるチェックリストを作って'
-          ],
-          days: [1,2,5]
-        }
-      },
-      {
-        key: 'deep',
-        name: 'じっくり探究タイプ',
-        items: [
-          '興味のあることに夢中になると時間を忘れる',
-          '予定や順序が変わると不安になる',
-          '細かい部分やパターンにすぐ気づく',
-          '興味を持ったテーマは徹底的に掘り下げる',
-          '同じ遊びや作業を繰り返すのが心地よい',
-          '集団より一人でじっくりやるのが好き',
-          '一つのテーマに長く集中することが多い',
-        ],
-        tips: {
-          strong: ['探究心','分析力','集中力','規則性の発見'],
-          care: ['予定変更のストレス','視野が狭くなる'],
-          prompts: [
-            '好きな分野をさらに深める探究課題を3つ考えて',
-            '恐竜（例）をテーマに調べ学習の流れを作って',
-            '集中した時間を活かして成果をまとめる工夫を提案して'
-          ],
-          days: [3,4]
-        }
-      },
-      {
-        key: 'experiential',
-        name: '体験実感タイプ',
-        items: [
-          '読み書きより「耳で聞く・話す」方が理解しやすい',
-          '絵や図で説明されるとわかりやすい',
-          '手を動かすと理解が深まる',
-          '言葉より絵や作品で表現するのが得意',
-          '音読が苦手でも内容は理解できている',
-          '映像や写真から学ぶ方が理解が速い',
-          '五感を通した遊び（音・色・感触）に強い関心を示す',
-        ],
-        tips: {
-          strong: ['実感力','表現力','体験型学習の吸収力'],
-          care: ['抽象説明では理解しづらい','読み書きに時間がかかる'],
-          prompts: [
-            '今日のお手伝いを実験レポート風にまとめて',
-            '体験したことを絵日記風に表現するアイデアを出して',
-            '体験を友達や家族に説明するプレゼンを考えて'
-          ],
-          days: [4,6]
-        }
-      },
-      {
-        key: 'creative',
-        name: '感性クリエイティブタイプ',
-        items: [
-          '大きな音やざわざわした場所が苦手',
-          '光や色に敏感に反応する',
-          '食感や素材に強いこだわりがある',
-          '匂いに敏感で、好き嫌いがはっきりしている',
-          '服のタグや素材を不快に感じることがある',
-          '五感を使った芸術的な表現に強い興味を持つ',
-          '絵や音を使った自己表現が得意',
-        ],
-        tips: {
-          strong: ['芸術的感性','独自の発想','表現力'],
-          care: ['刺激過多の環境で疲れやすい','こだわりがストレスになる'],
-          prompts: [
-            '色と音をテーマに詩を作って',
-            '好きな色を使ったデザイン案を考えて',
-            '自分の感覚をテーマに日記や絵を残す方法を提案して'
-          ],
-          days: [6,7]
-        }
-      },
-      {
-        key: 'balance',
-        name: 'バランスチェンジタイプ',
-        items: [
-          '自分なりのマイルールを作って動くことがある',
-          '自分のこだわりを大事にしている',
-          '気分や環境で興味が変わることが多い',
-          '好きなテーマは誰かに話したくて仕方ない（重複OK）',
-          '興味があることとないことの差が大きい',
-        ],
-        tips: {
-          strong: ['柔軟性','適応力','広い好奇心'],
-          care: ['やりかけが増えやすい','ルールのすり合わせが必要'],
-          prompts: [
-            '今日の気分に合うテーマを3つ提案して',
-            'いろんな分野を比べる表を作って',
-            '環境や気分に合わせた切り替え方法を考えて'
-          ],
-          days: [2,5,7]
-        }
-      },
-    ];
+<script>
+const AXES=[
+{key:'attention',name:'注意・実行機能',icon:'🎯',color:'#0ea5a3',cl:'#e0f7f7',
+ desc:'注意・集中・衝動性・計画性（ADHDに関連する特性）',
+ pf:'行動力・発想力・エネルギッシュな一面',
+ items:['一つのことに集中し続けるのが難しい','指示を最後まで聞かずに行動してしまうことがある','次の活動への切り替えに時間がかかる','忘れ物や物をなくすことが多い','静かにじっとしているのが難しい（体が動いてしまう）','衝動的に行動したり言葉が出てしまうことがある','やるべきことの順序を自分で考えて行動するのが難しい','好きなことへの集中は抜群に高い（過集中）'],
+ sf:['豊かな発想力と創造性','高いエネルギーと行動力','好奇心旺盛で新しいことへの意欲','複数のことを同時に考える力'],
+ adv:{
+  hoken:{medium:'注意・実行機能に特徴が見られます。地域の保健センターで無料の発達相談が受けられます。かかりつけ小児科への相談も最初のステップとして有効です。',high:'ADHD（注意欠如・多動症）の特性に近い傾向があります。地域の保健センター・小児科・児童精神科への相談をおすすめします。診断があると学校での合理的配慮が受けやすくなります。'},
+  hattatsu:{medium:'視覚的なスケジュール（絵カード・ホワイトボード）が見通しを助けます。タスクを小さく分け、一度にひとつずつ伝えましょう。タイマーを使った「〇分チャレンジ」も集中の助けになります。',high:'実行機能を支援する療育（認知行動療法・SST）が有効なことがあります。児童発達支援センターや放課後等デイサービスへの相談を検討してください。刺激を減らした学習スペースの整備も重要です。'},
+  counselor:{medium:'「できない」より「今日はここまでできた！」を積み上げる声かけが自己肯定感を守ります。行動を具体的に褒めましょう（「すごい」より「机に向かえたね」）。',high:'失敗体験が重なると自己肯定感が低下しやすいです。意識的に成功体験を積ませ、家庭を「安全な場所」に保つことが最優先です。保護者自身も専門家に話す場を持ちましょう。'},
+  school:{medium:'先生に相談：席の位置（前方・壁側など刺激が少ない場所）、指示は短く・具体的に・ひとつずつ、提出物のリマインド個別対応をお願いしてみましょう。通級指導教室の利用も検討できます。',high:'特別支援教育コーディネーターに相談し個別の指導計画（IEP）の作成を依頼しましょう。試験時間延長・別室受験・補助具使用なども合理的配慮として申請できます。'},
+  home:{medium:'朝のルーティンをカード化して見える場所に貼りましょう（起きる→着替え→朝ごはん→歯磨き→出発）。「〇〇しなさい」より「次は何だっけ？」と問いかける方が自律を育てます。',high:'勉強机周りを最小限に、スマホは視界の外に。ToDoリストアプリやホワイトボードを活用。生活リズム（特に睡眠）の安定が実行機能を助けます。'}
+ }
+},
+{key:'social',name:'社会性・コミュニケーション',icon:'💬',color:'#fb7185',cl:'#fff0f2',
+ desc:'対人関係・コミュニケーション・こだわり（ASDに関連する特性）',
+ pf:'誠実さ・深い集中力・独自のものの見方',
+ items:['友だちとの関係を作ったり維持したりするのが難しい','会話のやりとり（キャッチボール）が一方的になることがある','相手の表情や気持ちを読むのが難しい','言葉を文字通りに解釈し冗談や皮肉が通じにくい','特定のこだわりや興味にとても強くこだわる','急な変化や予定変更がとても苦手','集団行動より一人で過ごす方が落ち着く','自分のルールや順序へのこだわりが強い'],
+ sf:['誠実で正直な人柄','深い専門知識と集中力','独自の視点・こだわりが才能に','ルールを大切にする責任感'],
+ adv:{
+  hoken:{medium:'社会性・コミュニケーションに特徴が見られます。ASD（自閉スペクトラム症）の特性に関連することがあります。地域の発達相談窓口への早期相談が適切なサポートにつながります。',high:'ASD（自閉スペクトラム症）の特性が強く出ている可能性があります。専門医（小児科・児童精神科）への受診と早期療育の開始をおすすめします。早期介入で社会生活の質が大きく向上します。'},
+  hattatsu:{medium:'ソーシャルスキルトレーニング（SST）が有効です。「こんな時はこう言う」というソーシャルストーリーを使った練習、絵カードを使った感情理解の学習が助けになります。構造化された環境が安心感を生みます。',high:'構造化と見通しが最重要です：一日のスケジュールを視覚化し、変更前に「予告」を。専門的なSST・感覚統合療法への参加を検討しましょう。得意な「こだわり」を伸ばすことが自己肯定感につながります。'},
+  counselor:{medium:'お子さんは悪意があるのではなく「見えないルール」が見えていないことが多いです。叱るより「こういう場合はこうする」と具体的に教えましょう。一人の時間を大切に（疲れを溜めないため）。',high:'二次障害（不登校・うつ・不安障害）の予防がとても重要です。学校に行けない日があっても、保護者からの無条件の肯定が守り盾になります。専門カウンセラーへの相談を積極的に。'},
+  school:{medium:'先生へのお願い：指示は口頭＋書面で、クールダウンスペースの確保、席は端や前方が安心しやすいです。行事前の事前説明があると心の準備ができます。',high:'特別支援学級や通級指導教室（情緒障害）の利用を検討できます。入学・進学時に「サポートブック」（お子さんの特性と対応方法をまとめた冊子）を渡すと伝わりやすいです。'},
+  home:{medium:'「予測できる環境」が安心感につながります。行動の順序を絵で示す、予定変更は事前に告知する、好きなことを存分にできる時間を毎日確保しましょう。',high:'家は最も安全な場所に。外でたくさん頑張っている分、家ではスイッチをオフにできる環境を。こだわりや反復行動は安心するための方法なので、害のない範囲で認めましょう。'}
+ }
+},
+{key:'sensory',name:'感覚処理',icon:'✨',color:'#f59e0b',cl:'#fef3c7',
+ desc:'感覚の過敏・鈍感（触覚・聴覚・視覚・味覚・前庭感覚など）',
+ pf:'豊かな感受性・細部への鋭い気づき',
+ items:['大きな音や特定の音がとても苦手（耳をふさぐ・泣く）','特定の触感（服のタグ・素材など）がとても不快','特定の食感・匂いへの強い拒否反応がある（偏食）','強い光や蛍光灯などの光に敏感で目が痛い・つらい','体の感覚（バランス・回転・揺れ）への強い好き嫌いがある','痛みや暑さ・寒さに気づきにくい（鈍感）','多くの刺激がある場所（賑やかな場所）でとても疲れやすい'],
+ sf:['豊かな感性と芸術的才能','細かな変化への鋭い気づき','繊細で美しいものを感じ取る力','感覚的な喜びへの豊かな反応'],
+ adv:{
+  hoken:{medium:'感覚処理の特性が見られます。感覚過敏・鈍感は多くの発達障害に伴います。小児科や作業療法士（OT）がいる療育機関への相談が助けになります。',high:'感覚の過敏・鈍感が日常生活に大きく影響しています。作業療法士（OT）による感覚統合療法の評価と支援が大変有効です。地域の療育センターに相談してください。'},
+  hattatsu:{medium:'「感覚ダイエット」（一日の感覚刺激を調整するプログラム）が有効です。騒音にはイヤーマフやノイズキャンセリングイヤホンが効果的。苦手な素材の服を避ける工夫を。',high:'感覚統合療法（作業療法士による専門的アプローチ）の受診を強くすすめます。重みのある毛布・フィジェットツール・イヤーマフを日常的に活用できます。苦手な感覚を無理に慣れさせないことが大切です。'},
+  counselor:{medium:'「わがまま」ではなく、感覚が実際に辛いのです。「あなたの感覚は本物だよ」と認める声かけが重要です。苦手な環境を事前に把握し、回避策を一緒に考えましょう。',high:'感覚過敏による慢性的なストレスは見えにくいですが深刻です。放課後に静かな空間でリカバリーできる時間を確保してください。「これが苦手」を言語化できるよう一緒に整理しましょう。'},
+  school:{medium:'先生へのお願い：蛍光灯の調整（席位置変更）、体育での素材変更・除外、給食の偏食への配慮を。入学時に感覚特性をまとめた「サポートシート」を渡すと伝わりやすいです。',high:'イヤーマフの持参許可、別室での給食・着替えの確保など合理的配慮を申請しましょう。感覚負荷の高い行事（運動会・音楽会）の前後にケアの時間を設けるよう依頼を。'},
+  home:{medium:'家は「安全な感覚環境」に。好きな感覚（ふかふか素材・特定の音楽）を積極的に取り入れ、苦手な感覚はできる限り取り除きます。「感覚の好き嫌いリスト」を一緒に作ると理解が深まります。',high:'帰宅後に「感覚デトックスタイム」を設定しましょう（静かな部屋・好きな毛布・照明を落とす）。重みのある毛布・ハンモックチェア・フィジェットツールが多くの子どもに効果的です。'}
+ }
+},
+{key:'emotion',name:'感情調整',icon:'💗',color:'#8b5cf6',cl:'#f3f0ff',
+ desc:'感情の波・不安・切り替えの難しさ',
+ pf:'豊かな感情表現・深い共感力',
+ items:['感情の波が大きく興奮したり落ち込んだりが激しい','小さなことでパニックになったり激しく泣いたりする','不安や心配が強く物事が始まる前から緊張する','自分の気持ちを言葉でうまく表現できない','一度怒ったり泣いたりすると切り替えるのに時間がかかる','失敗や批判にとても敏感で深く傷つく','気分のムラが激しくそれが行動に大きく影響する'],
+ sf:['豊かな感受性と深い共感力','真剣に物事に向き合う誠実さ','感情の豊かさが芸術・表現の才能に','物事を深く感じ取る繊細さ'],
+ adv:{
+  hoken:{medium:'感情調整に課題が見られます。発達障害に伴う感情調整の困難は脳の発達的な特性です。周囲から「わがまま」に見えることがありますが、意図的なものではありません。地域の保健センターに相談できます。',high:'激しい感情的反応が続く場合、専門家（小児科・児童精神科・心理士）への受診を検討してください。二次障害（うつ・不安症）の予防のためにも早めのサポートが重要です。'},
+  hattatsu:{medium:'感情温度計や絵カードで気持ちを「見える化」する練習が助けになります（「今どのくらいしんどい？0〜10で教えて」）。落ち着くための「クールダウンスペース」を療育の中で一緒に練習しましょう。',high:'認知行動療法（CBT）やマインドフルネスを子ども向けにアレンジしたプログラムが有効です。アンガーマネジメントを扱うグループ療育を提供している機関もあります。'},
+  counselor:{medium:'感情爆発の後に叱るより、落ち着いてから「何がつらかったか」を振り返る方が学びになります。「つらかったね」という共感の言葉を先に。気持ちに名前をつける練習（「これは悔しい、という気持ちだね」）が有効です。',high:'激しいメルトダウンの後、お子さんも保護者も消耗します。保護者の方が「自分が何か悪いのでは」と感じることがありますが、あなたのせいではありません。専門カウンセラーと一緒に対処法を探しましょう。'},
+  school:{medium:'学校でのクールダウンスペース（保健室・廊下の隅など）を確保してもらいましょう。感情が高まる前の「イエローサイン」と先生との間で合図を決めておくと早めに対処できます。',high:'スクールカウンセラー（SC）の定期的な個別面談を依頼しましょう。授業中に安全に退出できる「クールダウンカード」の使用を合理的配慮として申請できます。'},
+  home:{medium:'家庭で「感情の語彙」を増やすことが長期的に助けになります（絵本・カードで気持ちの名前を学ぶ）。安心できるルーティンが感情の安定を助けます。激しい感情の後はギュッと抱きしめるなど体への働きかけが有効なことも。',high:'感情爆発が起きた時の「危機マニュアル」を家族で決めておきましょう（誰がどう対応するか）。テントやカーテンで囲んだコーナーなど、お子さんが落ち着けるスペースを作ると自分でクールダウンできるようになります。'}
+ }
+},
+{key:'learning',name:'学習特性',icon:'📚',color:'#22c55e',cl:'#f0fdf4',
+ desc:'読み書き・計算・学習スタイル（LDに関連する特性）',
+ pf:'独自の学習スタイルを持つ・多様な知性',
+ items:['読むのに時間がかかる・または読み間違いが多い','書くのが遅い・字が読みにくい・書くことが疲れる','聞いた情報（口頭指示など）をすぐ忘れてしまう','数字の概念や計算に困難がある','習ったことをテストで思い出すのが難しい','自分の考えを文章にまとめるのが難しい','特定の分野では突出した記憶力や知識を持つ'],
+ sf:['視覚・体験からの学習力が高い','突出した興味分野での深い知識','独自の問題解決アプローチ','暗記ではなく理解で学ぶ力'],
+ adv:{
+  hoken:{medium:'学習に特徴が見られます。LD（学習障害）には読字障害・書字障害・算数障害などがあります。地域の教育センターや発達相談窓口への相談で学習支援につながるステップがわかります。',high:'LD（学習障害）の特性が強く出ている可能性があります。学校の特別支援教育コーディネーターや教育センターの専門家に相談することをおすすめします。適切なツールと支援で学習の困難は大きく軽減できます。'},
+  hattatsu:{medium:'読み書きが苦手な場合、ICT機器（タブレット・音声入力・テキスト読み上げ）が強力な支援ツールになります。マルチモーダルな学習（聞く・見る・体験する）で理解が深まります。',high:'読字障害がある場合、音声教材（デジタル教科書・有声テキスト）の使用をおすすめします。書字が困難な場合はタブレット入力が有効です。漢字習得にはマルチセンサリーアプローチ（見て・書いて・声に出す）が助けになります。'},
+  counselor:{medium:'学習が遅いのは「怠けている」「努力が足りない」のではありません。脳の情報処理の違いです。「やり方が合っていないだけ」と理解させることが自己肯定感を守ります。得意なことで自信をつける機会を意識的に作りましょう。',high:'学習の困難が続くと「自分はバカだ」という誤った自己イメージが育ちやすいです。得意なことを大切に伸ばし、学習の「方法」に問題があるのであって「本人の能力」ではないことを繰り返し伝えてください。'},
+  school:{medium:'先生へのお願い：ノートをとる代わりに資料のコピーを提供、口頭テストの許可、テスト時間の延長を依頼しましょう。特別支援教育コーディネーターへの相談も有効です。',high:'デジタル教科書の利用申請、試験でのPC・タブレット使用許可、別室受験などの合理的配慮を申請しましょう。通級指導教室（LD通級）も活用できます。'},
+  home:{medium:'宿題の取り組み方を工夫しましょう：録音して聞きながら理解する、タブレットで書く、音声入力を使う。「何のために学ぶか」より「学ぶのが楽しい」体験を優先してください。',high:'学習補助ツールを積極的に活用しましょう（文章読み上げアプリ・かな入力補助・計算補助アプリ）。宿題は量より質。消耗するほど長い時間やらせないことが大切です。勉強以外の得意分野で輝ける場所を積極的に作りましょう。'}
+ }
+},
+{key:'motor',name:'運動・協調',icon:'🤸',color:'#3b82f6',cl:'#eff6ff',
+ desc:'体の動き・手先の器用さ（DCDに関連する特性）',
+ pf:'独自のペースで丁寧に取り組む粘り強さ',
+ items:['バランスをとるのが難しく転んだりぶつかったりしやすい','細かい手作業（ハサミ・ボタン・お箸）が難しい','ボールを投げる・受けるなど球技が苦手','跳んだり走ったりなど体を使った動きが同年代より難しい','書く作業が遅い・疲れやすい・字が乱れやすい','力加減のコントロールが難しい（強すぎたり弱すぎたり）'],
+ sf:['丁寧で粘り強いアプローチ','独自のリズムとペース','努力を重ねる意志の強さ','道具や方法を工夫する発想力'],
+ adv:{
+  hoken:{medium:'運動・協調に特徴が見られます。DCD（発達性協調運動症）は見落とされやすい発達障害の一つです。作業療法士（OT）がいる療育機関への相談で具体的なサポートが受けられます。',high:'DCD（発達性協調運動症）の可能性があります。作業療法士（OT）による専門的な評価と療育を受けることをおすすめします。早期介入で生活の質が大きく改善します。'},
+  hattatsu:{medium:'作業療法士（OT）による感覚統合療法・協調運動の練習が有効です。補助具（三角鉛筆・グリップ・ループ付きハサミ）を使うことで書字・工作が楽になります。',high:'作業療法士（OT）の専門的サポートが不可欠です。日常生活動作（ADL）の練習は繰り返しの小さなステップで。ICTツール（タブレット入力）で書字の負担を大幅に減らせます。'},
+  counselor:{medium:'体育や手先作業で苦労することが多く「自分はできない」と感じやすいです。できないことを笑わず「やり方を変えれば大丈夫」と伝え続けましょう。運動でなくても輝ける活動（音楽・アート・IT）を探しましょう。',high:'運動や不器用さで友人からからかわれる経験が積み重なると自己肯定感が大きく傷つきます。家庭では必ず応援者・味方でいることを示してください。からかいには早めに先生と連携して対処を。'},
+  school:{medium:'体育の評価は同年代との比較でなく「本人の努力・成長」で評価されるよう先生にお願いしましょう。補助具の使用許可（グリップ・ループはさみ等）も依頼できます。',high:'タブレット入力の許可、体育の別種目・見学の配慮、習字などの代替課題の許可を合理的配慮として申請できます。給食時のお箸・スプーン選択の自由も重要です。'},
+  home:{medium:'日常の動作練習は楽しくできる工夫を（料理のお手伝い・好きな遊び）。補助具を積極的に使いましょう（ループ付きお箸・マジックテープの靴・三角鉛筆）。',high:'宿題でのタブレット入力許可を学校に求めましょう。着替えなどの自立生活動作は時間をかけてゆっくり練習を。感覚統合を促す遊び（バランスボード・ビーズ遊び・スライム）が家庭でもできます。'}
+ }
+},
+{key:'strengths',name:'強み・才能',icon:'🌟',color:'#f59e0b',cl:'#fef3c7',
+ desc:'お子さんの特別な強みや才能の傾向',
+ pf:'光り輝く才能とその可能性',
+ items:['特定のテーマへの深い興味と突出した知識を持つ','細かいことに気づく鋭い観察力がある','特定の分野での記憶力が優れている','独自のアイデアや発想力がある（人と違う角度で考える）','正直で誠実・決めたルールを守る強さがある','音楽・絵・物作りなど特定の芸術的な才能がある','好きなことへの集中力と持続力が非常に高い','動物や小さい子など弱いものへの優しさや共感が深い'],
+ sf:['突出した才能と集中力','独創的な発想とアイデア','誠実さと深い共感力','特定分野の専門家になれる可能性'],
+ adv:{
+  hoken:{medium:'素晴らしい強みが見えています。発達の特性を持つお子さんは特定の分野で突出した才能を発揮することがよくあります。この強みを伸ばすことが自己肯定感と将来の可能性を開きます。',high:'非常に強い才能と個性が輝いています！得意分野を存分に伸ばせる環境（習い事・クラブ・専門プログラム）を積極的に探してあげましょう。'},
+  hattatsu:{medium:'強みを活かした療育・支援アプローチが最も効果的です。好きなテーマを使って学習やコミュニケーションの練習をすることで、子どものモチベーションが格段に上がります。',high:'この際立った強みを中心にすべての支援を組み立てましょう。才能を伸ばせる専門教室・メンター・コミュニティにつなげることを検討してください。'},
+  counselor:{medium:'「できないこと」より「できること」に着目する関わりが自己肯定感を育てます。得意なことで「あなたはすごい」と感じられる経験を毎日積ませてあげましょう。',high:'お子さんは本当に素晴らしい才能を持っています。それをお子さん自身が信じられるよう具体的に言葉にして伝え続けてください（「あなたの〇〇の力は本物だよ」）。'},
+  school:{medium:'先生に強みを伝えましょう。「うちの子はこんな得意があります」というポジティブな情報を年度初めに伝えることで、先生の見る目が変わります。',high:'学校での強みを活かす機会（発表会・コンクール・特技披露）を積極的に作ってもらいましょう。得意分野での「教え役・専門家役」を任せると自己肯定感と社会性が同時に育ちます。'},
+  home:{medium:'得意なことへの時間・投資を惜しまないでください。習い事・教材・道具への投資は最良の投資です。週に一度は「得意なことを存分にやる日」を作りましょう。',high:'才能を伸ばすための環境整備を積極的に。専門家に師事する・コンペに挑戦する・同じ興味を持つ仲間のコミュニティに入るなど、才能が伸びる場所を探しましょう。'}
+ }
+}
+];
 
-    const CHOICES = [
-      { label: 'いつもそう', value: 2 },
-      { label: 'ときどきそう', value: 1 },
-      { label: 'あまりない', value: 0 },
-    ];
+const PERSP=[
+  {key:'hoken',label:'👩‍⚕️ 保健師'},
+  {key:'hattatsu',label:'🏫 発達支援'},
+  {key:'counselor',label:'💬 カウンセラー'},
+  {key:'school',label:'📚 教育支援'},
+  {key:'home',label:'🏠 家庭の工夫'},
+];
 
-    // ====== UI生成 ======
-    const formEl = document.getElementById('quiz');
-    TYPES.forEach((t, ti) => {
-      const fs = document.createElement('fieldset');
-      fs.className = 'qset';
-      const legend = document.createElement('legend');
-      legend.textContent = `${ti+1}. ${t.name}`;
-      fs.appendChild(legend);
+let step=0, axIdx=0;
+const ans={};
+let radar=null;
 
-      t.items.forEach((qText, qi) => {
-        const q = document.createElement('div');
-        q.className = 'q';
-        const h = document.createElement('h4');
-        h.textContent = qText;
-        q.appendChild(h);
+function goStep(n){
+  document.getElementById('step'+step).classList.remove('active');
+  step=n;
+  document.getElementById('step'+n).classList.add('active');
+  document.getElementById('pf').style.width=(n/3*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===2){axIdx=0;renderAxis();}
+  if(n===3) renderResults();
+}
 
-        const row = document.createElement('div');
-        row.className = 'row';
-        CHOICES.forEach((c, ci) => {
-          const id = `${t.key}_${qi}_${ci}`;
-          const label = document.createElement('label');
-          label.className = 'pill';
-          label.setAttribute('for', id);
-          const input = document.createElement('input');
-          input.type = 'radio';
-          input.name = `${t.key}_${qi}`;
-          input.id = id;
-          input.value = c.value;
-          input.style.marginRight = '6px';
-          label.appendChild(input);
-          label.append(` ${c.label}`);
-          row.appendChild(label);
-        });
-        q.appendChild(row);
-        fs.appendChild(q);
+function renderAxis(){
+  const ax=AXES[axIdx];
+  document.getElementById('ahdr').innerHTML=`<span class="axis-icon">${ax.icon}</span><div class="axis-ttl"><h2>${ax.name}</h2><p>${ax.desc}</p></div>`;
+  const el=document.getElementById('qitems');
+  el.innerHTML='';
+  ax.items.forEach((q,qi)=>{
+    const nm=ax.key+'_'+qi, cur=ans[nm];
+    const d=document.createElement('div');
+    d.className='qitem';
+    d.innerHTML=`<p>${qi+1}. ${q}</p>`;
+    const rg=document.createElement('div');
+    rg.className='rg';
+    [{l:'よく当てはまる',v:2},{l:'少し当てはまる',v:1},{l:'あまりない',v:0}].forEach(c=>{
+      const lb=document.createElement('label');
+      lb.className='rl'+(cur===c.v?' s'+c.v:'');
+      lb.dataset.nm=nm; lb.dataset.v=c.v;
+      lb.innerHTML=`<input type="radio" name="${nm}" value="${c.v}" style="display:none" ${cur===c.v?'checked':''}> ${c.l}`;
+      lb.addEventListener('click',()=>{
+        ans[nm]=c.v;
+        document.querySelectorAll('[data-nm="'+nm+'"]').forEach(l=>l.className='rl'+(l.dataset.v==c.v?' s'+c.v:''));
       });
-
-      formEl.appendChild(fs);
+      rg.appendChild(lb);
     });
+    d.appendChild(rg); el.appendChild(d);
+  });
+  const dots=document.getElementById('adots');
+  dots.innerHTML='';
+  AXES.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===axIdx?' active':i<axIdx?' done':'');
+    dots.appendChild(d);
+  });
+  document.getElementById('acnt').textContent=(axIdx+1)+' / '+AXES.length;
+  document.getElementById('abk').style.visibility=axIdx===0?'hidden':'visible';
+  document.getElementById('anxt').textContent=axIdx===AXES.length-1?'結果を見る ✨':'次へ →';
+}
 
-    // ====== 計算 & 出力 ======
-    let radarInstance = null;
-    function calcScores(){
-      const scores = {};
-      let totalPossible = 0, totalScored = 0;
-      TYPES.forEach(t => {
-        let s = 0; const max = t.items.length * 2; totalPossible += max;
-        t.items.forEach((_, qi) => {
-          const name = `${t.key}_${qi}`;
-          const checked = document.querySelector(`input[name="${name}"]:checked`);
-          if(checked){ s += Number(checked.value); totalScored += Number(checked.value); }
-        });
-        scores[t.key] = {name: t.name, score: s, max};
+function nextAxis(){ if(axIdx<AXES.length-1){axIdx++;renderAxis();window.scrollTo({top:0,behavior:'smooth'});}else goStep(3); }
+function prevAxis(){ if(axIdx>0){axIdx--;renderAxis();window.scrollTo({top:0,behavior:'smooth'});} }
+
+function calcScores(){
+  const r={};
+  AXES.forEach(ax=>{
+    let s=0,a=0; const max=ax.items.length*2;
+    ax.items.forEach((_,qi)=>{const v=ans[ax.key+'_'+qi];if(v!==undefined){s+=v;a++;}});
+    r[ax.key]={score:s,max,pct:a>0?Math.round(s/max*100):0};
+  });
+  return r;
+}
+
+function lvl(p){ return p>=65?'high':p>=35?'medium':'low'; }
+
+function renderResults(){
+  const sc=calcScores();
+  renderOverview(sc);
+  renderStrengths(sc);
+  renderAdvice(sc);
+  renderResources(sc);
+  renderSelfcare();
+  document.getElementById('cpyBtn').onclick=()=>{
+    let t='【AmeCan. こどもの特性プロファイル 結果】\n\n';
+    AXES.forEach(a=>{const s=sc[a.key];t+=a.icon+' '+a.name+'：'+s.pct+'% ('+s.score+'/'+s.max+')\n';});
+    t+='\n※医療的診断ではありません。傾向の参考としてご活用ください。';
+    navigator.clipboard.writeText(t).then(()=>alert('コピーしました'));
+  };
+}
+
+function renderOverview(sc){
+  const el=document.getElementById('rOverview');
+  const ageEl=document.getElementById('childAge');
+  const ageLbl=ageEl.options[ageEl.selectedIndex]?.text||'';
+  const sorted=AXES.map(a=>({...a,...sc[a.key]})).sort((a,b)=>b.pct-a.pct);
+  const top=sorted.filter(a=>a.key!=='strengths'&&a.pct>=35).slice(0,3);
+
+  let html=`<div style="text-align:center;padding:16px 0 12px">
+    <h2>🌈 お子さんのプロファイル</h2>
+    ${ageLbl?`<p style="color:var(--muted);font-size:.88rem">${ageLbl}</p>`:''}
+    <p style="color:var(--muted);font-size:.85rem;margin-top:4px">回答内容に基づいた傾向プロファイルです（医療診断ではありません）</p>
+  </div>
+  <div class="chart-wrap"><canvas id="rc" height="280"></canvas></div>`;
+
+  html+='<div>';
+  AXES.forEach(ax=>{
+    const s=sc[ax.key];
+    html+=`<div class="sbar-wrap">
+      <div class="sbar-lbl"><span>${ax.icon} ${ax.name}</span><span style="font-weight:700;color:${ax.color}">${s.pct}%</span></div>
+      <div class="sbar-track"><div class="sbar-fill" style="width:${s.pct}%;background:${ax.color}"></div></div>
+    </div>`;
+  });
+  html+='</div>';
+
+  if(top.length>0){
+    html+=`<div class="notice notice-b" style="margin-top:14px"><strong>📊 特に傾向が出やすい特性</strong><br>`;
+    top.forEach(a=>{ html+=`<span class="tag" style="background:${a.cl};color:${a.color};margin:3px">${a.icon} ${a.name}</span>`; });
+    html+='</div>';
+  }
+
+  el.innerHTML=html;
+  if(radar) radar.destroy();
+  radar=new Chart(document.getElementById('rc'),{
+    type:'radar',
+    data:{labels:AXES.map(a=>a.name),datasets:[{label:'傾向（%）',data:AXES.map(a=>sc[a.key].pct),fill:true,
+      backgroundColor:'rgba(14,165,163,0.12)',borderColor:'rgba(14,165,163,0.8)',
+      pointBackgroundColor:AXES.map(a=>a.color),pointBorderColor:'#fff',pointRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{r:{suggestedMin:0,suggestedMax:100,ticks:{stepSize:25,font:{size:10}}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}%`}}}}
+  });
+}
+
+function renderStrengths(sc){
+  const el=document.getElementById('rStrengths');
+  let all=[];
+  AXES.forEach(ax=>{
+    if(sc[ax.key].pct>=30&&ax.key!=='strengths') all=all.concat(ax.sf.slice(0,2));
+  });
+  if(sc.strengths.pct>=30) all=all.concat(AXES.find(a=>a.key==='strengths').sf);
+  if(all.length===0) all=['一生懸命取り組む力','自分なりのペースを持っている','感じる力・個性的なものの見方'];
+  const uniq=[...new Set(all)].slice(0,8);
+  el.innerHTML=`
+    <h2>🌟 お子さんの強み・才能</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:10px">特性はすべて「才能の原石」です。プロファイルから見えてくる強みです。</p>
+    <div class="str-card">
+      <h3 style="color:#0a7b79">✨ プロファイルから見えてくる強み</h3>
+      <div class="str-list">${uniq.map(s=>`<span class="str-tag">${s}</span>`).join('')}</div>
+    </div>
+    <p style="font-size:.88rem;color:var(--muted)">これらの強みは、適切な環境とサポートがあれば大きく花開く可能性を秘めています。苦手な部分への支援と同時に、得意を伸ばすことが最も大切です。</p>
+  `;
+}
+
+function renderAdvice(sc){
+  const el=document.getElementById('rAdvice');
+  const rel=AXES.filter(a=>lvl(sc[a.key].pct)!=='low');
+  let tbHtml='<div class="tab-bar">';
+  PERSP.forEach((p,i)=>{ tbHtml+=`<button class="tab-btn${i===0?' active':''}" onclick="sw('${p.key}',this)">${p.label}</button>`; });
+  tbHtml+='</div>';
+  let pnHtml='';
+  PERSP.forEach((p,pi)=>{
+    pnHtml+=`<div class="tab-pane${pi===0?' active':''}" id="tp-${p.key}">`;
+    if(rel.length===0){
+      pnHtml+=`<div class="adv-block"><p>全体的にバランスよく育っています。引き続き様子を観察しながら、強みを大切に関わっていきましょう。</p></div>`;
+    }else{
+      rel.forEach(ax=>{
+        const s=sc[ax.key]; const lv=lvl(s.pct);
+        const txt=ax.adv[p.key]?.[lv]; if(!txt) return;
+        pnHtml+=`<div class="adv-block" style="border-left:4px solid ${ax.color}">
+          <h4>${ax.icon} ${ax.name}（${s.pct}%）</h4>
+          <p style="font-size:.88rem">${txt}</p>
+        </div>`;
       });
-      return {scores, totalScored, totalPossible};
     }
+    pnHtml+='</div>';
+  });
+  el.innerHTML=`<h2>💡 専門的視点からのアドバイス</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:12px">5つの専門的視点から、お子さんの特性に合わせたアドバイスをお届けします。</p>
+    ${tbHtml}${pnHtml}`;
+}
 
-    function renderRadar(scores){
-      const ctx = document.getElementById('radarChart');
-      const labels = TYPES.map(t=>t.name.replace('タイプ',''));
-      const dataPercents = TYPES.map(t=>{
-        const s = scores[t.key].score; const max = t.items.length*2; return Math.round((s/max)*100);
-      });
-      if(radarInstance){ radarInstance.destroy(); }
-      radarInstance = new Chart(ctx, {
-        type: 'radar',
-        data: { labels, datasets: [{ label: '傾向（%）', data: dataPercents, fill: true,
-          backgroundColor: 'rgba(14,165,163,0.20)', borderColor: 'rgba(14,165,163,1)',
-          pointBackgroundColor: 'rgba(251,113,133,1)', pointBorderColor: '#fff' }] },
-        options: { responsive: true, maintainAspectRatio: false,
-          scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { stepSize: 20 } } },
-          plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx)=> `${ctx.raw}%` } } } }
-      });
-    }
+function sw(key,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tp-'+key).classList.add('active');
+}
 
-    function renderResult(){
-      const {scores, totalScored, totalPossible} = calcScores();
-      const result = document.getElementById('result');
-      const badges = document.getElementById('scoreBadges');
-      const detail = document.getElementById('resultDetail');
-      const bar = document.getElementById('totalBar');
+function renderResources(sc){
+  const el=document.getElementById('rResources');
+  const hi=AXES.filter(a=>lvl(sc[a.key].pct)==='high').map(a=>a.key);
+  const res=[
+    {i:'🏥',t:'地域の保健センター（発達相談）',d:'無料で相談できる最初の窓口。専門機関への紹介もしてもらえます。市区町村のホームページで確認を。',s:true},
+    {i:'🏫',t:'児童発達支援センター',d:'就学前のお子さんに専門的な療育を提供。作業療法・言語療法・感覚統合療法なども受けられます。',s:hi.includes('attention')||hi.includes('social')||hi.includes('sensory')||hi.includes('motor')},
+    {i:'🌙',t:'放課後等デイサービス',d:'就学後のお子さん向けの療育施設。放課後や長期休みに利用でき、社会性・自立スキルを楽しく練習できます。',s:true},
+    {i:'📞',t:'発達障害者支援センター（各都道府県）',d:'発達障害の専門相談窓口。診断後の支援・就学・就労の相談まで幅広くサポート。全国47都道府県に設置。',s:true},
+    {i:'🏫',t:'通級指導教室・特別支援学級',d:'在籍学級に通いながら専門的な指導が受けられます（通級）。学習面・情緒面・コミュニケーション支援。',s:hi.includes('learning')||hi.includes('social')||hi.includes('attention')},
+    {i:'🩺',t:'小児科・児童精神科',d:'発達検査・診断・薬物療法の窓口。「発達外来」を設けている小児科を探しましょう。紹介状なしでも受診可能なことが多いです。',s:hi.length>=2},
+    {i:'👐',t:'作業療法士（OT）・言語療法士（ST）',d:'感覚統合・運動・言語のプロフェッショナル。療育機関や病院で受けられます。評価だけでも参考になります。',s:hi.includes('sensory')||hi.includes('motor')},
+    {i:'🤝',t:'保護者サポートグループ・親の会',d:'同じ経験を持つ保護者とつながれる場。情報交換・精神的サポートが得られます。地域や障害種別の会が多数あります。',s:true},
+  ];
+  const show=res.filter(r=>r.s);
+  el.innerHTML=`<h2>📍 使える支援リソースガイド</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:10px">お子さんのプロファイルに関連する支援機関・サービスです。</p>
+    <div class="notice"><strong>💡 相談の入口は「保健センター」が最もハードルが低く、無料です。</strong> まず地域の保健センターへ電話してみましょう。</div>
+    ${show.map(r=>`<div class="res-item"><div class="res-icon">${r.i}</div><div class="res-body"><h4>${r.t}</h4><p>${r.d}</p></div></div>`).join('')}`;
+}
 
-      result.hidden = false;
-
-      // badges
-      badges.innerHTML = '';
-      const arr = Object.entries(scores).map(([k,v]) => ({key:k, ...v})).sort((a,b)=>b.score-a.score);
-      const top = arr[0];
-      const top2 = arr[1];
-      arr.forEach((s, i) => {
-        const b = document.createElement('span');
-        const color = i===0 ? 'b-accent' : (i===1 ? 'b-brand' : '');
-        b.className = `badge ${color}`;
-        b.style.marginRight = '8px';
-        b.textContent = `${s.name}: ${s.score} / ${s.max}`;
-        badges.appendChild(b);
-      });
-
-      // total meter
-      const pct = totalPossible ? Math.round((totalScored/totalPossible)*100) : 0;
-      bar.style.width = pct + '%';
-      bar.title = `回答の進捗: ${pct}%`;
-
-      // radar
-      renderRadar(scores);
-
-      // detail cards（上位2タイプ）
-      detail.innerHTML = '';
-      [top, top2].filter(Boolean).forEach(s => {
-        const t = TYPES.find(tt => tt.key === s.key);
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h3>${t.name}（${s.score}/${s.max}）</h3>
-          <p class="muted">※「傾向が強めに出やすいタイプ」を表示しています。診断ではありません。</p>
-          <p><span class="pill">おすすめDay：${(t.tips.days||[]).join('・')}</span></p>
-          <h4>強み</h4>
-          <ul>${t.tips.strong.map(x=>`<li>${x}</li>`).join('')}</ul>
-          <h4>工夫が必要な場面</h4>
-          <ul>${t.tips.care.map(x=>`<li>${x}</li>`).join('')}</ul>
-          <h4>AI活用プロンプト例</h4>
-          <ul>${t.tips.prompts.map(x=>`<li>「${x}」</li>`).join('')}</ul>
-        `;
-        detail.appendChild(card);
-      });
-      window.scrollTo({top: result.offsetTop - 64, behavior: 'smooth'});
-    }
-
-    document.getElementById('calcBtn').addEventListener('click', renderResult);
-    document.getElementById('resetBtn').addEventListener('click', ()=>{
-      document.getElementById('quiz').reset();
-      document.getElementById('result').hidden = true;
-      if(radarInstance){radarInstance.destroy();}
-    });
-    document.getElementById('printBtn').addEventListener('click', ()=>window.print());
-    document.getElementById('copyBtn').addEventListener('click', ()=>{
-      const txt = document.getElementById('result').innerText.trim();
-      navigator.clipboard.writeText(txt).then(()=>alert('結果をコピーしました'));
-    });
-    document.getElementById('shareBtn').addEventListener('click', ()=>{
-      const {scores} = calcScores();
-      const arr = Object.entries(scores).map(([k,v]) => ({key:k, ...v})).sort((a,b)=>b.score-a.score);
-      const top = arr[0];
-      const t = TYPES.find(tt => tt.key === top.key);
-      const percent = Math.round((top.score/top.max)*100);
-      const days = (t.tips.days||[]).join('・');
-      const share = `AmeCan. 才能プロファイル（β）
-上位タイプ：${t.name}（${percent}%）
-強み：${t.tips.strong.join('、')}
-おすすめDay：${days}
-AIプロンプト例：「${t.tips.prompts[0]}」
-#AmeCan #才能プロファイル`;
-      navigator.clipboard.writeText(share).then(()=>alert('共有テキストをコピーしました'));
-    });
-  </script>
+function renderSelfcare(){
+  document.getElementById('rSelfcare').innerHTML=`<div class="selfcare-card">
+    <h2 style="color:#5b21b6;margin-bottom:8px">💚 保護者のみなさんへ</h2>
+    <p style="font-weight:700;font-size:1rem;margin-bottom:10px">「あなたが元気でいることが、子どもの最大の支援です」</p>
+    <p>お子さんのために懸命に動いているあなた自身も、サポートが必要です。保護者のメンタルヘルスは、子どもの育ちに直結します。</p>
+    <h3 style="margin:12px 0 7px;color:#5b21b6">今すぐできる保護者のセルフケア</h3>
+    <ul style="font-size:.9rem">
+      <li>🛁 週に一度、自分だけのリラックスタイムを予定に入れる</li>
+      <li>🤝 信頼できる人に「今つらい」と話す</li>
+      <li>📖 「完璧な親」を目指さない。70点で十分と自分に言い聞かせる</li>
+      <li>🎧 保護者向けの情報発信・当事者の会でつながる</li>
+      <li>💬 スクールカウンセラー・相談支援専門員に「親として困っている」と相談する</li>
+      <li>🌙 自分の睡眠・食事を最低限守る</li>
+    </ul>
+    <div class="notice" style="margin-top:12px;background:rgba(255,255,255,.6)">
+      <strong>📞 保護者向け相談窓口</strong><br>
+      • 子育て相談：各市区町村 子育て支援センター<br>
+      • こころの健康：こころの健康相談統一ダイヤル 0570-064-556<br>
+      • 発達障害：発達障害者支援センター（各都道府県）
+    </div>
+  </div>`;
+}
+</script>
 </body>
 </html>
